@@ -32,38 +32,31 @@ public class JwtUtil {
         // Convert hours to milliseconds
         this.jwtTokenValidity = expirationHours * 60 * 60 * 1000L;
     }
-
+    // Extract all claims from the JWT token
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)  // Set the secret key for signing the token
+                .build()
+                .parseClaimsJws(token)  // Parse the JWT token
+                .getBody();  // Return the body (claims) of the token
+    }
+    // Retrieve a specific claim from the JWT token
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getAllClaimsFromToken(token);  // Get all claims from the token
+        return claimsResolver.apply(claims);  // Apply the claims resolver to extract the specific claim
+    }
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
-
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
-
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
+    // Check if the JWT token is expired
     private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        final Date expiration = getExpirationDateFromToken(token);  // Get the expiration date
+        return expiration.before(new Date());  // Return true if the token is expired
     }
-
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
-    }
-
+    // Generate a new JWT token based on the claims and subject
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -73,15 +66,20 @@ public class JwtUtil {
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
-
+    // Generate a JWT token for a user based on their details
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();  // Initialize the claims map
+        return doGenerateToken(claims, userDetails.getUsername());  // Generate and return the token
+    }
+    // Validate the JWT token by comparing its username and checking expiration
     public Boolean validateToken(String token, UserDetails userDetails) {
         try {
             final String username = getUsernameFromToken(token);
-            return (username.equals(userDetails.getUsername()));
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
         } catch (ExpiredJwtException ex) {
-            return false; // Token is expired
+            return false;  // If the token is expired, return false
         } catch (Exception ex) {
-            return false; // Any other parsing/invalid token case
+            return false;
         }
     }
 }

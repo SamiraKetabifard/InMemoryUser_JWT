@@ -18,28 +18,25 @@ public class UserConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    // Retrieves the AuthenticationManager from the AuthenticationConfiguration, used to authenticate users
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
             throws Exception {
         return configuration.getAuthenticationManager();
     }
-
+    // Defines in-memory users with roles and encrypted passwords
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-
         UserDetails adminUser = User.builder()
                 .username("admin")
                 .password(passwordEncoder.encode("admin"))
                 .roles("ADMIN")
                 .build();
-
         UserDetails normalUser = User.builder()
                 .username("user")
                 .password(passwordEncoder.encode("user"))
                 .roles("USER")
                 .build();
-
         return new InMemoryUserDetailsManager(adminUser, normalUser);
     }
 }
