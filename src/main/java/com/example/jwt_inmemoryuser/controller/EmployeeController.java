@@ -15,28 +15,15 @@ public class EmployeeController {
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
-    @GetMapping("/getall")
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
-    }
-
     @PostMapping("/add")
     public ResponseEntity<String> addEmployee(@RequestBody Employee employee) {
         employeeService.createEmployee(employee);
         return new ResponseEntity<>("Employee added sucessfully", HttpStatus.CREATED);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        Employee updated = employeeService.updateEmployee(employee, id);
-        return ResponseEntity.ok(updated);
+    @GetMapping("/getall")
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
     }
-
-    @DeleteMapping("/del/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        employeeService.deleteEmployeeById(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/getbyid/{id}")
     public ResponseEntity<Employee> getEmployee(@PathVariable("id") Long id) {
         Employee employee = employeeService.getEmployeeById(id);
@@ -45,8 +32,15 @@ public class EmployeeController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
-
-
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
+        Employee updated = employeeService.updateEmployee(employee, id);
+        return ResponseEntity.ok(updated);
+    }
+    @DeleteMapping("/del/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployeeById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

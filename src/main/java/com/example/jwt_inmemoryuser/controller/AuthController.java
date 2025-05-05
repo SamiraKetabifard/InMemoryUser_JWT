@@ -29,17 +29,6 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest) {
-        this.doAuthenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
-        UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getUsername());
-        String token = this.jwtUtil.generateToken(userDetails);
-        JwtResponse response = JwtResponse.builder()
-                .jwtToken(token)
-                .username(userDetails.getUsername()).build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     private void doAuthenticate(String username, String password) {
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(username, password);
@@ -48,5 +37,16 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Credentials Invalid !!");
         }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest) {
+        doAuthenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getUsername());
+        String token = jwtUtil.generateToken(userDetails);
+        JwtResponse response = JwtResponse.builder()
+                .jwtToken(token)
+                .username(userDetails.getUsername())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -53,8 +53,8 @@ public class JwtUtil {
     }
     // Check if the JWT token is expired
     private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);  // Get the expiration date
-        return expiration.before(new Date());  // Return true if the token is expired
+        final Date expiration = getExpirationDateFromToken(token);
+        return expiration.before(new Date());  // it returns true if the token has expired
     }
     // Generate a new JWT token based on the claims and subject
     private String doGenerateToken(Map<String, Object> claims, String subject) {
