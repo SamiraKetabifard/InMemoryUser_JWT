@@ -21,7 +21,6 @@ public class SecurityConfig {
         this.authEntryPoint = authEntryPoint;
         this.jwtAuthFilter = jwtAuthFilter;
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -37,7 +36,6 @@ public class SecurityConfig {
                 // Add the custom JWT filter before Spring Security's default authentication filter.
 // This ensures that JWT token validation happens before any username/password-based authentication.
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }
