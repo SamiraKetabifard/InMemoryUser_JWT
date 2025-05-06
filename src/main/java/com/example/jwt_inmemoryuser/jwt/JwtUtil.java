@@ -30,6 +30,7 @@ public class JwtUtil {
         // Convert Base64 encoded string to SecretKey
         this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKeyString));
     }
+
     // Extract all claims from the JWT token
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
@@ -38,11 +39,13 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     // Retrieve a specific claim from the JWT token
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
+
     // Generate a new JWT token based on the claims and subject
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -66,19 +69,16 @@ public class JwtUtil {
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
-    // Check if the JWT token is expired
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+    // Check if the token is expired
+    private boolean isTokenExpired(String token) {
+        return getExpirationDateFromToken(token).before(new Date());
     }
     // Validate the JWT token by comparing its username and checking expiration
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails) {
         try {
-            final String username = getUsernameFromToken(token);
+            String username = getUsernameFromToken(token);
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-        } catch (ExpiredJwtException ex) {
-            return false;
-        } catch (Exception ex) {
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
