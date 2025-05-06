@@ -23,15 +23,12 @@ public class JwtUtil {
     private int expirationHours;
 
     private SecretKey secretKey;
-    private long jwtTokenValidity;
 
     // Initialize the secret key and token validity based on configuration
     @PostConstruct
     public void init() {
         // Convert Base64 encoded string to SecretKey
         this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKeyString));
-        // Convert hours to milliseconds
-        this.jwtTokenValidity = expirationHours * 60 * 60 * 1000L;
     }
     // Extract all claims from the JWT token
     private Claims getAllClaimsFromToken(String token) {
@@ -47,19 +44,19 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
     // Generate a new JWT token based on the claims and subject
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationHours))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
     // Generate a JWT token for a user based on their details
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername());
     }
     // Get the username (subject) from the JWT token
     public String getUsernameFromToken(String token) {
