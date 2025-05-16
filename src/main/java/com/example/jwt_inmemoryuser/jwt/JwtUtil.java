@@ -30,7 +30,6 @@ public class JwtUtil {
         // Convert Base64 encoded string to SecretKey
         this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKeyString));
     }
-
     // Extract all claims from the JWT token
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
@@ -39,13 +38,11 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
     // Retrieve a specific claim from the JWT token
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
-
     // Generate a new JWT token based on the claims and subject
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()

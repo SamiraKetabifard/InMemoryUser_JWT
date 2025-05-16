@@ -24,12 +24,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (optionalEmployee.isEmpty()) {
             throw new RuntimeException("Employee not found with id: " + id);
         }
-        Employee existingEmployee = optionalEmployee.get();
-        existingEmployee.setName(employee.getName());
-        existingEmployee.setEmail(employee.getEmail());
-        existingEmployee.setDepartment(employee.getDepartment());
-        existingEmployee.setSalary(employee.getSalary());
-        return employeeRepository.save(existingEmployee);
+        optionalEmployee.get().setName(employee.getName());
+        optionalEmployee.get().setEmail(employee.getEmail());
+        optionalEmployee.get().setDepartment(employee.getDepartment());
+        optionalEmployee.get().setSalary(employee.getSalary());
+        return employeeRepository.save(optionalEmployee.get());
     }
     @Override
     public void createEmployee(Employee employee) {
