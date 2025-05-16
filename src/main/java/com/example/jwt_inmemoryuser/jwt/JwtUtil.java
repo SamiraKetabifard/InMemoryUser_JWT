@@ -24,9 +24,9 @@ public class JwtUtil {
 
     private SecretKey secretKey;
 
-    // Initialize the secret key and token validity based on configuration
+    // Initialize the secret key based on configuration
     @PostConstruct
-    public void init() {
+    private void init() {
         // Convert Base64 encoded string to SecretKey
         this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKeyString));
     }
@@ -44,7 +44,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
     // Generate a new JWT token based on the claims and subject
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map <String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -63,7 +63,7 @@ public class JwtUtil {
         return getClaimFromToken(token, Claims::getSubject);
     }
     // Get the expiration date from the JWT token
-    public Date getExpirationDateFromToken(String token) {
+    private Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
     // Check if the token is expired
