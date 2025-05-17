@@ -28,7 +28,6 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
-
     private void doAuthenticate(String username, String password) {
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(username, password);

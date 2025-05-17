@@ -39,7 +39,7 @@ public class JwtUtil {
                 .getBody();
     }
     // Retrieve a specific claim from the JWT token
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
@@ -75,7 +75,7 @@ public class JwtUtil {
         try {
             String username = getUsernameFromToken(token);
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (JwtException | IllegalArgumentException e){
             return false;
         }
     }
