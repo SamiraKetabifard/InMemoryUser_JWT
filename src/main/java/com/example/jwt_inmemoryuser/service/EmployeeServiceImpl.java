@@ -4,7 +4,6 @@ import com.example.jwt_inmemoryuser.entity.Employee;
 import com.example.jwt_inmemoryuser.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -20,15 +19,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     @Override
     public Employee updateEmployee(Employee employee, Long id) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        if (optionalEmployee.isEmpty()) {
-            throw new RuntimeException("Employee not found with id: " + id);
-        }
-        optionalEmployee.get().setName(employee.getName());
-        optionalEmployee.get().setEmail(employee.getEmail());
-        optionalEmployee.get().setDepartment(employee.getDepartment());
-        optionalEmployee.get().setSalary(employee.getSalary());
-        return employeeRepository.save(optionalEmployee.get());
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+        existingEmployee.setName(employee.getName());
+        existingEmployee.setEmail(employee.getEmail());
+        existingEmployee.setDepartment(employee.getDepartment());
+        existingEmployee.setSalary(employee.getSalary());
+        return employeeRepository.save(existingEmployee);
     }
     @Override
     public void createEmployee(Employee employee) {
