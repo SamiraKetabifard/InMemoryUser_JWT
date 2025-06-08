@@ -5,7 +5,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-
 public class JwtResponse {
 
     private String username;

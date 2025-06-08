@@ -28,12 +28,12 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
-    private void doAuthenticate(String username, String password) {
+    private void doAuthenticate(String username, String password){
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(username, password);
         try {
             authenticationManager.authenticate(authentication);
-        } catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e){
             throw new BadCredentialsException("Credentials Invalid !!");
         }
     }

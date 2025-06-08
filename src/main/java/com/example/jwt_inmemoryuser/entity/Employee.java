@@ -22,5 +22,4 @@ public class Employee {
     private String email;
     private String salary;
     private String department;
-
 }
