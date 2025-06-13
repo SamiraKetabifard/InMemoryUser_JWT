@@ -48,36 +48,29 @@ class AuthControllerTest {
         validRequest = new JwtRequest();
         validRequest.setUsername("Mari");
         validRequest.setPassword("password");
-
         invalidRequest = new JwtRequest();
         invalidRequest.setUsername("Mari");
         invalidRequest.setPassword("wrongpassword");
-
         userDetails = new User("Mari", "password", Collections.emptyList());
     }
-
     @Test
     void login_withValidCredentials_shouldReturnToken() {
         // given
         given(userDetailsService.loadUserByUsername("Mari")).willReturn(userDetails);
         given(jwtUtil.generateToken(userDetails)).willReturn("test.token.here");
-
         // when
         ResponseEntity<JwtResponse> response = authController.login(validRequest);
-
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getJwtToken()).isEqualTo("test.token.here");
         assertThat(response.getBody().getUsername()).isEqualTo("Mari");
     }
-
     @Test
     void login_withInvalidCredentials_shouldThrowException() {
         // given
         doThrow(new BadCredentialsException("Invalid credentials"))
                 .when(authenticationManager)
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
-
         // when & then
         assertThatThrownBy(() -> authController.login(invalidRequest))
                 .isInstanceOf(BadCredentialsException.class)

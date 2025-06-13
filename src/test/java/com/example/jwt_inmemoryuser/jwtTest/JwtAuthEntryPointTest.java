@@ -38,15 +38,12 @@ class JwtAuthEntryPointTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
     }
-
     @Test
     void commence_shouldSetUnauthorizedStatusAndWriteMessage() throws Exception {
         // given
         when(authException.getMessage()).thenReturn("Authentication failed");
-
         // when
         jwtAuthEntryPoint.commence(request, response, authException);
-
         // then
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         assertThat(stringWriter.toString()).contains("Access Denied: Authentication failed");

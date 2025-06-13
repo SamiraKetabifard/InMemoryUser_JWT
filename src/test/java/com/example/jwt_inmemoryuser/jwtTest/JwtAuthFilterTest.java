@@ -49,7 +49,6 @@ class JwtAuthFilterTest {
         validToken = "valid.token.here";
         userDetails = new User("Samira", "password", Collections.emptyList());
     }
-
     @Test
     void doFilterInternal_withValidToken_shouldAuthenticate() throws Exception {
         // given
@@ -57,10 +56,8 @@ class JwtAuthFilterTest {
         given(jwtUtil.getUsernameFromToken(validToken)).willReturn("Samira");
         given(userDetailsService.loadUserByUsername("Samira")).willReturn(userDetails);
         given(jwtUtil.validateToken(validToken, userDetails)).willReturn(true);
-
         // when
         jwtAuthFilter.doFilter(request, response, filterChain);
-
         // then
         verify(filterChain).doFilter(request, response);
     }
@@ -70,10 +67,8 @@ class JwtAuthFilterTest {
         given(request.getHeader("Authorization")).willReturn("Bearer invalid.token");
         given(jwtUtil.getUsernameFromToken("invalid.token"))
                 .willAnswer(invocation -> { throw new SignatureException("Invalid signature"); });
-
         // when
         jwtAuthFilter.doFilter(request, response, filterChain);
-
         // then
         verify(filterChain).doFilter(request, response);
         verifyNoInteractions(userDetailsService);
@@ -82,10 +77,8 @@ class JwtAuthFilterTest {
     void doFilterInternal_withNoToken_shouldContinueFilterChain() throws Exception {
         // given
         given(request.getHeader("Authorization")).willReturn(null);
-
         // when
         jwtAuthFilter.doFilter(request, response, filterChain);
-
         // then
         verify(filterChain).doFilter(request, response);
         verifyNoInteractions(jwtUtil);
