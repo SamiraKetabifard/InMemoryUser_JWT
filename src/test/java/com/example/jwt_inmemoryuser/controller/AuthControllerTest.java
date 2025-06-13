@@ -51,18 +51,19 @@ class AuthControllerTest {
         invalidRequest = new JwtRequest();
         invalidRequest.setUsername("Mari");
         invalidRequest.setPassword("wrongpassword");
+
         userDetails = new User("Mari", "password", Collections.emptyList());
     }
     @Test
     void login_withValidCredentials_shouldReturnToken() {
         // given
         given(userDetailsService.loadUserByUsername("Mari")).willReturn(userDetails);
-        given(jwtUtil.generateToken(userDetails)).willReturn("test.token.here");
+        given(jwtUtil.generateToken(userDetails)).willReturn("test.token");
         // when
         ResponseEntity<JwtResponse> response = authController.login(validRequest);
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getJwtToken()).isEqualTo("test.token.here");
+        assertThat(response.getBody().getJwtToken()).isEqualTo("test.token");
         assertThat(response.getBody().getUsername()).isEqualTo("Mari");
     }
     @Test
