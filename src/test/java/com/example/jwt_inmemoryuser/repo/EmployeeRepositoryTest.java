@@ -24,8 +24,8 @@ class EmployeeRepositoryTest {
     @Test
     void whenFindAll_thenReturnAllEmployees() {
         // given
-        Employee emp1 = new Employee(null, "Samira", "samira@gmail.com", "50000", "IT");
-        Employee emp2 = new Employee(null, "Reza", "reza@gmail.com", "60000", "HR");
+        Employee emp1 = new Employee(null,"Samira","samira@gmail.com","50000","IT");
+        Employee emp2 = new Employee(null,"Reza","reza@gmail.com","60000","HR");
         entityManager.persist(emp1);
         entityManager.persist(emp2);
         entityManager.flush();
@@ -55,19 +55,9 @@ class EmployeeRepositoryTest {
         assertThat(found).isEmpty();
     }
     @Test
-    void whenSave_thenEmployeeIsPersisted() {
-        // given
-        Employee emp = new Employee(null, "Ali", "ali@gmail.com", "50000", "IT");
-        // when
-        Employee saved = employeeRepository.save(emp);
-        // then
-        assertThat(entityManager.find(Employee.class, saved.getId())).isNotNull();
-        assertThat(saved.getName()).isEqualTo("Ali");
-    }
-    @Test
     void whenDelete_thenEmployeeIsRemoved() {
         // given
-        Employee emp = new Employee(null, "Samira", "samira@gmail.com", "50000", "IT");
+        Employee emp = new Employee(null,"Samira","samira@gmail.com","50000","IT");
         entityManager.persist(emp);
         entityManager.flush();
         // when

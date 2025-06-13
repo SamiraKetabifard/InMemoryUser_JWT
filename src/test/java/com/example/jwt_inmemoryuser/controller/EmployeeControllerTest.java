@@ -84,7 +84,8 @@ class EmployeeControllerTest {
     @Test
     void updateEmployee_withValidId_shouldReturnUpdatedEmployee() {
         // given
-        Employee updatedDetails = new Employee(1L, "Mari", "mari@gmail.com", "55000", "Finance");
+        Employee updatedDetails = new Employee(1L, "Mari", "mari@gmail.com",
+                "55000", "Finance");
         given(employeeService.updateEmployee(any(Employee.class), anyLong())).willReturn(updatedDetails);
         // when
         ResponseEntity<Employee> response = employeeController.updateEmployee(1L, updatedDetails);

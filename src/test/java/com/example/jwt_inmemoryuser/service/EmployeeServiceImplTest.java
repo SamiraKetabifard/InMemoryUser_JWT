@@ -75,11 +75,12 @@ class EmployeeServiceImplTest {
     @Test
     void updateEmployee_withValidId_shouldUpdateEmployee() {
         // given
-        Employee updatedDetails = new Employee(null, "Mari", "mari@gmail.com", "55000", "Finance");
+        Employee emp = new Employee(null, "Mari", "mari@gmail.com",
+                "55000", "Finance");
         given(employeeRepository.findById(1L)).willReturn(Optional.of(employee));
-        given(employeeRepository.save(any(Employee.class))).willReturn(updatedDetails);
+        given(employeeRepository.save(any(Employee.class))).willReturn(emp);
         // when
-        Employee updated = employeeService.updateEmployee(updatedDetails, 1L);
+        Employee updated = employeeService.updateEmployee(emp, 1L);
         // then
         assertThat(updated.getName()).isEqualTo("Mari");
         assertThat(updated.getDepartment()).isEqualTo("Finance");
@@ -87,7 +88,8 @@ class EmployeeServiceImplTest {
     @Test
     void updateEmployee_withInvalidId_shouldThrowException() {
         // given
-        Employee updatedDetails = new Employee(null, "Ali", "ali@gmail.com", "55000", "Finance");
+        Employee updatedDetails = new Employee(null, "Ali", "ali@gmail.com",
+                "55000", "Finance");
         given(employeeRepository.findById(anyLong())).willReturn(Optional.empty());
         // when & then
         assertThatThrownBy(() -> employeeService.updateEmployee(updatedDetails, 999L))
